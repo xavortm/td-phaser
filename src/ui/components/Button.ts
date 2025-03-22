@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { uiColors } from '@config/ui';
 
 /**
  * A button component that can be used to create a button in a Phaser scene.
@@ -15,13 +16,19 @@ export class Button extends Phaser.GameObjects.Container {
     super(scene, x, y);
 
     // Create background
-    this.background = scene.add.rectangle(0, 0, 120, 40, 0x000000);
-    this.background.setStrokeStyle(2, 0xffffff);
+    this.background = scene.add.rectangle(
+      0,
+      0,
+      120,
+      40,
+      Number(uiColors.background.replace('#', '0x'))
+    );
+    this.background.setStrokeStyle(2, Number(uiColors.foreground.replace('#', '0x')));
     this.background.setInteractive({ useHandCursor: true });
 
     // Create text
     this.text = scene.add.text(0, 0, text, {
-      color: '#ffffff',
+      color: uiColors.foreground,
       fontSize: '16px',
       ...style,
     });
@@ -39,14 +46,13 @@ export class Button extends Phaser.GameObjects.Container {
   }
 
   private onPointerOver(): void {
-    this.background.setFillStyle(0xffffff);
-    this.background.setStrokeStyle(2, 0xffffff);
-    this.text.setStyle({ color: '#000000' });
+    this.background.setFillStyle(Number(uiColors.foreground.replace('#', '0x')));
+    this.text.setStyle({ color: uiColors.background });
   }
 
   private onPointerOut(): void {
-    this.background.setFillStyle(0x000000);
-    this.text.setStyle({ color: '#ffffff' });
+    this.background.setFillStyle(Number(uiColors.background.replace('#', '0x')));
+    this.text.setStyle({ color: uiColors.foreground });
   }
 
   public onClick(callback: Function, context?: any): this {

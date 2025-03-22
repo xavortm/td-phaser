@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { uiColors } from '@config/ui';
 
 export class Heading extends Phaser.GameObjects.Text {
   constructor(
@@ -10,7 +11,7 @@ export class Heading extends Phaser.GameObjects.Text {
   ) {
     super(scene, x, y, text, {
       fontSize: '32px',
-      color: '#ffffff',
+      color: uiColors.foreground,
       align: 'center',
       ...style,
     });
@@ -23,11 +24,11 @@ export class Heading extends Phaser.GameObjects.Text {
     this.setInteractive({ useHandCursor: true });
 
     this.on('pointerover', () => {
-      this.setStyle({ color: '#ffff00' });
+      this.setStyle({ color: uiColors.foregroundHover });
     });
 
     this.on('pointerout', () => {
-      this.setStyle({ color: '#ffffff' });
+      this.setStyle({ color: uiColors.foreground });
     });
 
     return this;

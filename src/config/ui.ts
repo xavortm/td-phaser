@@ -23,3 +23,9 @@ export const uiTypography = {
     fontSize: 38,
   },
 };
+
+export const uiColors = {
+  foreground: '#ffffff',
+  foregroundHover: '#ffff00',
+  background: '#000000',
+};

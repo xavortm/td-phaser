@@ -1,26 +1,23 @@
-import { Scene, GameObjects } from 'phaser';
+import { Scene } from 'phaser';
+import { uiTypography } from '@config/uiTypography';
+import Heading from '@/ui/components/Heading';
 
 export class MainMenu extends Scene {
-  title: GameObjects.Text;
+  title: Heading;
 
   constructor() {
     super('MainMenu');
   }
 
   create() {
-    this.title = this.add
-      .text(512, 460, 'Main Menu', {
-        fontFamily: 'pressStart2P',
-        fontSize: 18,
-        color: '#ffffff',
-        stroke: '#000000',
-        strokeThickness: 4,
+    this.title = this.add.existing(
+      new Heading(this, 512, 384, 'Main Menu', {
+        ...uiTypography.style.base,
+        ...uiTypography.gameTitle,
         align: 'center',
       })
-      .setOrigin(0.5);
+    ) as Heading;
 
-    this.input.once('pointerdown', () => {
-      this.scene.start('Game');
-    });
+    this.title.setOrigin(0.5);
   }
 }

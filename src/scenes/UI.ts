@@ -1,7 +1,9 @@
 import Label from '@/ui/components/Label';
+import { formatTime } from '@/utils/time';
 
-// The time to complete the game in milliseconds
-const TIME_TO_COMPLETE = 30 * 30 * 1000;
+// For now, I will keep some variables here for the game config, but later, move them to the game config file.
+const TIME_TO_COMPLETE = 30 * 60 * 1000; // 30 minutes
+const VERSION = 'v0.0.1';
 
 class UI extends Phaser.Scene {
   private gameContainer: Phaser.GameObjects.Rectangle;
@@ -53,9 +55,11 @@ class UI extends Phaser.Scene {
       fontSize: '12px',
     });
 
-    this.timeText = this.add.text(width - offset - 60, offset + 4, 'Time: 30:00', {
-      fontSize: '12px',
-    });
+    this.timeText = this.add
+      .text(width - offset - 10, offset + 4, `Time: ${formatTime(TIME_TO_COMPLETE)}`, {
+        fontSize: '12px',
+      })
+      .setOrigin(1, 0);
   }
 
   private setupTimer() {
@@ -74,15 +78,13 @@ class UI extends Phaser.Scene {
   }
 
   private setupVersionLabel(width: number, height: number) {
-    this.versionLabel = new Label(this, width - 20, height - 20, 'v0.0.1, built by @xavortm', {
+    this.versionLabel = new Label(this, width - 20, height - 20, `${VERSION}, built by @xavortm`, {
       fontSize: 10,
     }).setOrigin(1, 1);
   }
 
   private updateTimer() {
-    const minutes = Math.floor(this.timeRemaining / 60000);
-    const seconds = Math.floor((this.timeRemaining % 60000) / 1000);
-    this.timeText.setText(`Time: ${minutes}:${seconds.toString().padStart(2, '0')}`);
+    this.timeText.setText(`Time: ${formatTime(this.timeRemaining)}`);
   }
 }
 

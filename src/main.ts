@@ -7,6 +7,7 @@ import { FontPlugin } from 'phaser-font-plugin';
 
 import { Game } from 'phaser';
 import type { Types } from 'phaser';
+import UI from './scenes/UI';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -23,7 +24,7 @@ const config: Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
+  scene: [Boot, Preloader, MainMenu, MainGame, GameOver, UI],
   plugins: {
     global: [
       {

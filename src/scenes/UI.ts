@@ -15,7 +15,7 @@ class UI extends Phaser.Scene {
   private versionLabel: Label;
 
   constructor() {
-    super({ key: 'UI', active: true });
+    super({ key: 'UI' });
   }
 
   create() {
@@ -32,14 +32,10 @@ class UI extends Phaser.Scene {
 
   private setupGameContainer(width: number, height: number, offset: number) {
     // A large rectangle to contain the game visually
-    this.gameContainer = this.add.rectangle(
-      offset,
-      offset,
-      width - offset * 2,
-      height - offset * 2,
-      0x000000,
-      1
-    );
+    this.gameContainer = this.add
+      .rectangle(offset, offset, width - offset * 2, height - offset * 2, 0x000000, 0)
+      .setName('gameContainer');
+
     this.gameContainer.setOrigin(0, 0);
     this.gameContainer.setStrokeStyle(4, 0xffffff, 1);
   }

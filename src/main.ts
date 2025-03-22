@@ -24,6 +24,8 @@ const config: Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
+  // UI scene is set to active: true in its constructor, which makes it always visible
+  // This is intentional since we want the UI overlay to persist across scenes
   scene: [Boot, Preloader, MainMenu, MainGame, GameOver, UI],
   plugins: {
     global: [

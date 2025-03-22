@@ -3,6 +3,7 @@ import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
+import { FontPlugin } from 'phaser-font-plugin';
 
 import { Game } from 'phaser';
 import type { Types } from 'phaser';
@@ -14,12 +15,21 @@ const config: Types.Core.GameConfig = {
   width: 1024,
   height: 768,
   parent: 'game-container',
-  backgroundColor: '#028af8',
+  backgroundColor: '#000000',
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
+  plugins: {
+    global: [
+      {
+        key: 'FontPlugin',
+        plugin: FontPlugin,
+        start: true,
+      },
+    ],
+  },
 };
 
 export default new Game(config);

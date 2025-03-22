@@ -12,7 +12,13 @@ export class Button extends Phaser.GameObjects.Container {
   private text: Phaser.GameObjects.Text;
   private background: Phaser.GameObjects.Rectangle;
 
-  constructor(scene: Scene, x: number, y: number, text: string, style: any = {}) {
+  constructor(
+    scene: Scene,
+    x: number,
+    y: number,
+    text: string,
+    style: Phaser.Types.GameObjects.Text.TextStyle = {}
+  ) {
     super(scene, x, y);
 
     // Create background
@@ -55,12 +61,13 @@ export class Button extends Phaser.GameObjects.Container {
     this.text.setStyle({ color: uiColors.foreground });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public onClick(callback: Function, context?: any): this {
     this.background.on('pointerdown', callback, context);
     return this;
   }
 
-  public setStyle(style: any): this {
+  public setStyle(style: Phaser.Types.GameObjects.Text.TextStyle): this {
     this.text.setStyle(style);
     return this;
   }

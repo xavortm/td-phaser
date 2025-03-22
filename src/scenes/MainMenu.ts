@@ -10,7 +10,7 @@ export class MainMenu extends Scene {
 
   create() {
     // Create a heading
-    const title = new Heading(this, 512, 200, 'Main Menu').setLevel(1);
+    new Heading(this, 512, 200, 'Main Menu').setLevel(1);
 
     // Create buttons
     const playButton = new Button(this, 512, 300, 'Play Game').onClick(() => this.startGame());
@@ -19,7 +19,7 @@ export class MainMenu extends Scene {
       console.log('Options clicked')
     );
 
-    const versionLabel = new Label(
+    new Label(
       this,
       Number(this.game.config.width) - 20,
       Number(this.game.config.height) - 20,

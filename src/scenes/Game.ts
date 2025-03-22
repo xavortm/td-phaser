@@ -14,21 +14,6 @@ export class Game extends Scene {
   }
 
   create() {
-    const width = Number(this.game.config.width);
-    const height = Number(this.game.config.height);
-    const offset = 10;
-
-    const rectangle = this.add.rectangle(
-      offset,
-      offset,
-      width - offset * 2,
-      height - offset * 2,
-      0x000000,
-      1
-    );
-    rectangle.setOrigin(0, 0);
-    rectangle.setStrokeStyle(4, 0xffffff, 1);
-
     // Launch UI scene
     this.scene.launch('UI', UI);
   }

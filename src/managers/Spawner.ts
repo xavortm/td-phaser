@@ -8,12 +8,14 @@ interface EnemyToSpawn {
   level: number;
 }
 
-// TODO: Move to config file.
-const waves: {
+interface Wave {
   wave: number;
   enemies: EnemyToSpawn[];
   spawnTime: number;
-}[] = [
+}
+
+// TODO: Move to config file.
+const waves: Wave[] = [
   {
     wave: 1,
     enemies: [{ enemyType: EnemyType.Soldier, count: 1, level: 1 }],
@@ -25,7 +27,6 @@ export default class Spawner {
   private gameManager: GameManager;
   private spawnPoints: Phaser.GameObjects.Rectangle[];
   private enemiesGroup: Phaser.GameObjects.Group;
-  private spawnIndex: number;
 
   constructor(gameManager: GameManager) {
     this.gameManager = gameManager;
@@ -41,26 +42,22 @@ export default class Spawner {
 
     const waveToSpawn = waves.find((w) => w.wave === currentWave);
     if (!waveToSpawn) {
+      console.error('No wave to spawn', currentWave);
       return;
     }
 
-    this.spawnIndex = 0;
-    this.spawnNextEnemy(waveToSpawn);
-  }
+    const flattenedEnemies = this.flattenEnemies(waveToSpawn);
+    const spawnPoint = this.spawnPoints[Phaser.Math.Between(0, this.spawnPoints.length - 1)];
 
-  private spawnNextEnemy(waveConfig: (typeof waves)[0]) {
-    const scene = this.gameManager.getScene();
+    console.log('spawnPoint', spawnPoint);
 
-    if (this.spawnIndex >= waveConfig.enemies[0].count) {
-      scene.events.emit('spawningEnemiesDone', waveConfig.wave);
-      return;
-    }
-
-    // TODO: Spawn enemy based on waveConfig
-    this.spawnIndex++;
-
-    scene.time.delayedCall(waveConfig.spawnTime, () => {
-      this.spawnNextEnemy(waveConfig);
+    flattenedEnemies.forEach((enemyType) => {
+      switch (enemyType) {
+        case EnemyType.Soldier:
+          const enemy = new SoldierEnemy(scene, spawnPoint.x, spawnPoint.y, 1);
+          this.enemiesGroup.add(enemy);
+          break;
+      }
     });
   }
 
@@ -69,6 +66,17 @@ export default class Spawner {
   }
 
   public setSpawnPoints(spawnPoints: Phaser.GameObjects.Rectangle[]): void {
+    console.log('setSpawnPoints', spawnPoints);
     this.spawnPoints = spawnPoints;
+  }
+
+  private flattenEnemies(waveConfig: (typeof waves)[0]): EnemyType[] {
+    const flattenedEnemies: EnemyType[] = [];
+
+    waveConfig.enemies.forEach((enemy) => {
+      flattenedEnemies.push(...Array(enemy.count).fill(enemy.enemyType));
+    });
+
+    return flattenedEnemies;
   }
 }

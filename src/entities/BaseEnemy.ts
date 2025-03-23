@@ -85,8 +85,6 @@ abstract class BaseEnemy extends Phaser.GameObjects.Sprite {
   abstract revive(): void;
 
   abstract getReward(): number;
-
-  abstract move(): void;
 }
 
 export default BaseEnemy;

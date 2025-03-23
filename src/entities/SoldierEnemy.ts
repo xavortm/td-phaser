@@ -4,6 +4,7 @@ class SoldierEnemy extends BaseEnemy {
   constructor(scene: Phaser.Scene, x: number, y: number, level: number) {
     super(scene, x, y);
     this.level = level;
+    console.log('SoldierEnemy constructor', level);
 
     // Create a red circle temporarily to test the texture.
     const graphics = scene.add.graphics();

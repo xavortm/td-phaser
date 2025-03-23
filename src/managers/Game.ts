@@ -30,7 +30,6 @@ export default class GameManager {
     // The UI is ready, so we can create the path and set the spawn points
     this.scene.events.once('uiReady', () => {
       this.gridManager.createPath(1);
-      this.spawner.setSpawnPoints(this.gridManager.getSpawnPoints());
       this.startNextWave();
     });
   }

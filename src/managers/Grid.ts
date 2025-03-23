@@ -5,6 +5,7 @@ export default class GridManager {
   private gameManager: GameManager;
   private grid: Cell[][];
   private gridContainer: Phaser.GameObjects.Container;
+  private spawnPoints: Phaser.GameObjects.Rectangle[];
 
   constructor(gameManager: GameManager) {
     this.gameManager = gameManager;
@@ -17,6 +18,10 @@ export default class GridManager {
 
   public getGridContainer(): Phaser.GameObjects.Container {
     return this.gridContainer;
+  }
+
+  public getSpawnPoints(): Phaser.GameObjects.Rectangle[] {
+    return this.spawnPoints;
   }
 
   public createPath(wave: number) {
@@ -34,6 +39,13 @@ export default class GridManager {
     // Cell end:
     const cellEnd = this.grid[5][this.grid[0].length - 1];
     cellEnd.setCellState(CellState.PathEnd);
+
+    // Spawn points:
+    this.setSpawnPoints(this.grid[5]);
+  }
+
+  private setSpawnPoints(spawnPoints: Phaser.GameObjects.Rectangle[]): void {
+    this.spawnPoints = spawnPoints;
   }
 
   /**

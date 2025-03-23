@@ -25,27 +25,20 @@ export default class GridManager {
   }
 
   public createPath(wave: number) {
-    // TODO: Make this a function that creates a path based on the wave number.
-    // And of course, make it generate paths with a nicer format than this.
+    // Get the first cell of the row as spawn point
+    const spawnPoint = this.grid[5][0];
+
+    // Set the path
     for (let i = 0; i < this.grid[0].length; i++) {
       const cell = this.grid[5][i];
       cell.setCellState(CellState.Path);
     }
 
-    // Cell start:
-    const cellStart = this.grid[5][0];
-    cellStart.setCellState(CellState.PathStart);
+    this.grid[5][0].setCellState(CellState.PathStart);
+    this.grid[5][this.grid[0].length - 1].setCellState(CellState.PathEnd);
 
-    // Cell end:
-    const cellEnd = this.grid[5][this.grid[0].length - 1];
-    cellEnd.setCellState(CellState.PathEnd);
-
-    // Spawn points:
-    this.setSpawnPoints(this.grid[5]);
-  }
-
-  private setSpawnPoints(spawnPoints: Phaser.GameObjects.Rectangle[]): void {
-    this.spawnPoints = spawnPoints;
+    // Set spawn point in the spawner
+    this.gameManager.getSpawner().setSpawnPoints([spawnPoint]);
   }
 
   /**

@@ -8,18 +8,41 @@ import GameManager from './Game';
  * This class does not interract with the scene directly?
  */
 export default class WaveManager {
-  private wave: number = 0;
   private gameManager: GameManager;
 
   constructor(gameManager: GameManager) {
     this.gameManager = gameManager;
   }
 
-  public getWave(): number {
-    return this.wave;
+  public startWave(): void {
+    const scene = this.gameManager.getScene();
+    const currentWave = scene.data.get('currentWave');
+
+    // Emit wave start event
+    scene.events.emit('waveStarted', currentWave);
+
+    // Set up wave completion check
+    scene.events.once('spawningEnemiesDone', () => {
+      this.checkWaveCompletion();
+    });
   }
 
-  public startWave(wave: number = 1) {
-    this.wave = wave;
+  private checkWaveCompletion(): void {
+    const scene = this.gameManager.getScene();
+    const currentWave = scene.data.get('currentWave');
+
+    // When all enemies are dead/reached end
+    if (this.areAllEnemiesDefeated()) {
+      scene.events.emit('waveCompleted', currentWave);
+
+      // Add rewards
+      scene.data.values.score += 100 * currentWave;
+      scene.data.values.gold += 50 * currentWave;
+    }
+  }
+
+  private areAllEnemiesDefeated(): boolean {
+    // TODO: Implement check for remaining enemies
+    return true;
   }
 }

@@ -48,6 +48,7 @@ export default class GridManager {
     const padding = [55, 75]; // Padding from edges
     const scene = this.gameManager.getScene();
     this.gridContainer = scene.add.container(padding[0], padding[1]);
+    this.gridContainer.setName('gridContainer');
 
     // Calculate cell dimensions
     const cellWidth = 48;

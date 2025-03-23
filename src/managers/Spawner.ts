@@ -1,6 +1,7 @@
 import SoldierEnemy from '@/entities/SoldierEnemy';
 import GameManager from './Game';
 import { EnemyType } from '@/entities/BaseEnemy';
+import BaseEnemy from '@/entities/BaseEnemy';
 
 interface EnemyToSpawn {
   enemyType: EnemyType;
@@ -34,6 +35,10 @@ export default class Spawner {
     this.enemiesGroup = this.gameManager.getScene().add.group();
   }
 
+  public getEnemiesGroup(): Phaser.GameObjects.Group {
+    return this.enemiesGroup;
+  }
+
   public spawnEnemies() {
     const scene = this.gameManager.getScene();
     const currentWave = scene.data.get('currentWave');
@@ -54,11 +59,22 @@ export default class Spawner {
     flattenedEnemies.forEach((enemyType) => {
       switch (enemyType) {
         case EnemyType.Soldier:
-          const enemy = new SoldierEnemy(scene, spawnPoint.x, spawnPoint.y, 1);
+          const gridContainer = this.gameManager
+            .getScene()
+            .children.getByName('gridContainer') as Phaser.GameObjects.Container;
+          const enemy = new SoldierEnemy(
+            scene,
+            spawnPoint.x + (gridContainer ? gridContainer.x : 0),
+            spawnPoint.y + (gridContainer ? gridContainer.y : 0),
+            1
+          );
           this.enemiesGroup.add(enemy);
+          console.log('enemy position:', enemy.x, enemy.y);
           break;
       }
     });
+
+    scene.events.emit('spawningEnemiesDone', currentWave);
   }
 
   public getSpawnPoints(): Phaser.GameObjects.Rectangle[] {

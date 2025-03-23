@@ -6,18 +6,10 @@ class SoldierEnemy extends BaseEnemy {
     this.level = level;
     console.log('SoldierEnemy constructor', level);
 
-    // Create a red circle temporarily to test the texture.
-    const graphics = scene.add.graphics();
-    graphics.lineStyle(2, 0x000000); // Black border, 2px thick
-    graphics.fillStyle(0xff0000, 1); // Red fill
-    graphics.fillCircle(0, 0, 16); // Circle with radius 16
-    graphics.strokeCircle(0, 0, 16); // Circle border
-
-    // Convert the graphics to a texture
-    graphics.generateTexture('soldier_enemy', 32, 32);
-    graphics.destroy();
-
     this.setTexture('soldier_enemy');
+    this.setOrigin(0.5);
+    this.setDepth(1);
+    scene.add.existing(this);
 
     // TODO: Make this more dynamic.
     this.speed = 1 + (level - 1) * 0.5;

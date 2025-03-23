@@ -1,9 +1,9 @@
 import GameManager from '@/managers/Game';
-import Cell from '@/entities/Cell';
+import Cell, { CellState } from '@/entities/Cell';
 
 export default class GridManager {
   private gameManager: GameManager;
-  private grid: Phaser.GameObjects.Rectangle[][];
+  private grid: Cell[][];
   private gridContainer: Phaser.GameObjects.Container;
 
   constructor(gameManager: GameManager) {
@@ -11,10 +11,34 @@ export default class GridManager {
     this.generateInteractiveGrid(19, 13);
   }
 
-  public getGrid(): Phaser.GameObjects.Rectangle[][] {
+  public getGrid(): Cell[][] {
     return this.grid;
   }
 
+  public getGridContainer(): Phaser.GameObjects.Container {
+    return this.gridContainer;
+  }
+
+  public createPath(wave: number) {
+    // TODO: Make this a function that creates a path based on the wave number.
+    // And of course, make it generate paths with a nicer format than this.
+    for (let i = 0; i < this.grid[0].length; i++) {
+      const cell = this.grid[5][i];
+      cell.setCellState(CellState.Path);
+    }
+
+    // Cell start:
+    const cellStart = this.grid[5][0];
+    cellStart.setCellState(CellState.PathStart);
+
+    // Cell end:
+    const cellEnd = this.grid[5][this.grid[0].length - 1];
+    cellEnd.setCellState(CellState.PathEnd);
+  }
+
+  /**
+   * Called when initializing the grid and is not needed afterwards.
+   */
   private generateInteractiveGrid(cols: number, rows: number) {
     const padding = [55, 75]; // Padding from edges
     const scene = this.gameManager.getScene();

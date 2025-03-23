@@ -16,6 +16,7 @@ export default class GameManager {
 
     this.scene.events.once('uiReady', () => {
       this.startWave(1);
+      this.gridManager.createPath(1);
     });
   }
 

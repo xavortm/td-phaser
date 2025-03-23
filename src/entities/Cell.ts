@@ -11,6 +11,8 @@ export enum CellState {
   Path = 'path',
   Tower = 'tower',
   Locked = 'locked',
+  PathStart = 'pathStart',
+  PathEnd = 'pathEnd',
 }
 
 export default class Cell extends Phaser.GameObjects.Rectangle {
@@ -46,7 +48,7 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
     this.setCellState(initialState);
   }
 
-  public setCellState(newState: CellState) {
+  public setCellState(newState: CellState): void {
     this.cellState = newState;
     this.updateAppearance();
   }
@@ -73,6 +75,15 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
       case CellState.Path:
         // TODO: Use a nicer graphic or color for the path of the enemies.
         this.setFillStyle(0xffffff);
+        this.setStrokeStyle(strokeWidth, 0xffffff);
+        break;
+      case CellState.PathStart:
+        this.setFillStyle(0x0000ff);
+        this.setStrokeStyle(strokeWidth, 0x0000ff);
+        break;
+      case CellState.PathEnd:
+        this.setFillStyle(0xff00000);
+        this.setStrokeStyle(strokeWidth, 0xff00000);
         break;
     }
   }

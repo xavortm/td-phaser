@@ -23,11 +23,19 @@ class UI extends Phaser.Scene {
     const height = Number(this.game.config.height);
     const offset = 10;
 
-    // Create UI elements as class properties so we can update them
+    // Create UI elements
     this.setupGameContainer(width, height, offset);
     this.setupGameStateInfo(width, offset);
-    this.setupTimer();
     this.setupVersionLabel(width, height);
+
+    // Listen for game events
+    const gameScene = this.scene.get('Game');
+    gameScene.events.on('waveStarted', () => {
+      this.startTimer();
+    });
+
+    // Signal UI is ready. We can use this across the game.
+    gameScene.events.emit('uiReady');
   }
 
   private setupGameContainer(width: number, height: number, offset: number) {
@@ -58,7 +66,7 @@ class UI extends Phaser.Scene {
       .setOrigin(1, 0);
   }
 
-  private setupTimer() {
+  private startTimer() {
     // Track the time remaining
     this.timeRemaining = TIME_TO_COMPLETE;
 

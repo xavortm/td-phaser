@@ -15,9 +15,11 @@ export enum CellState {
   PathEnd = 'pathEnd',
 }
 
+// States that are not interactive
+const lockedStates = [CellState.Locked, CellState.PathStart, CellState.PathEnd, CellState.Path];
+
 export default class Cell extends Phaser.GameObjects.Rectangle {
   private cellState: CellState = CellState.Empty;
-  private isInteractive: boolean = true;
   private tower?: Phaser.GameObjects.Sprite;
   private highlight?: Phaser.GameObjects.Rectangle;
 
@@ -26,23 +28,17 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
 
     // Set up the cell's appearance
     this.setOrigin(0, 0);
+    lockedStates.includes(initialState) ? this.disableInteractive() : this.setInteractive();
 
-    if (initialState === CellState.Path || initialState === CellState.Locked) {
-      this.isInteractive = false;
-    }
-
-    if (this.isInteractive) {
-      this.setInteractive()
-        .on('pointerdown', () => {
-          this.handlePointerDown();
-        })
-        .on('pointerup', () => {
-          this.handlePointerUp();
-        })
-        .on('pointerout', () => {
-          this.handlePointerOut();
-        });
-    }
+    this.on('pointerdown', () => {
+      this.handlePointerDown();
+    })
+      .on('pointerup', () => {
+        this.handlePointerUp();
+      })
+      .on('pointerout', () => {
+        this.handlePointerOut();
+      });
 
     // Initialize cell state
     this.setCellState(initialState);
@@ -51,6 +47,7 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
   public setCellState(newState: CellState): void {
     this.cellState = newState;
     this.updateAppearance();
+    lockedStates.includes(newState) ? this.disableInteractive() : this.setInteractive();
   }
 
   private handlePointerUp() {
@@ -92,7 +89,6 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
     console.log('Cell debug data:');
     console.log('Location:', this.x, this.y);
     console.log('State:', this.cellState);
-    console.log('Interactive:', this.isInteractive);
     console.log('--------------------------------');
   }
 

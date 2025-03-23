@@ -3,27 +3,25 @@ import GridManager from './Grid';
 import WaveManager from './Wave';
 import Spawner from './Spawner';
 
-/**
- * A class to manage the game state as a whole and work with other managers.
- */
 export default class GameManager {
   private scene: Scene;
   private waveManager: WaveManager;
-  private spawner: Spawner;
   private gridManager: GridManager;
+  private spawner: Spawner;
 
   constructor(scene: Scene) {
     this.scene = scene;
     this.waveManager = new WaveManager(this);
-    this.spawner = new Spawner(this);
     this.gridManager = new GridManager(this);
+    this.spawner = new Spawner(this);
 
     // Initialize game state
     this.scene.data.set({
       currentWave: 0,
       score: 0,
       lives: 10,
-      gold: 100,
+      xp: 0,
+      level: 1,
     });
 
     // Setup data change listeners
@@ -33,10 +31,12 @@ export default class GameManager {
     this.scene.events.once('uiReady', () => {
       this.gridManager.createPath(1);
       this.spawner.setSpawnPoints(this.gridManager.getSpawnPoints());
+      this.startNextWave();
     });
   }
 
   private handleDataChange(parent: any, key: string, value: any): void {
+    console.log(`Data changed: ${key} to ${value}`);
     // You can handle specific data changes here
     switch (key) {
       case 'currentWave':

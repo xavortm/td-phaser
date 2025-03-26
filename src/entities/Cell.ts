@@ -5,6 +5,7 @@ const cellBackground = 0x000000;
 const cellSize = 48;
 const strokeWidth = 1;
 const strokeColor = 0x333333;
+const highlightColor = 0x4488ff;
 
 export enum CellState {
   Empty = 'empty',
@@ -13,6 +14,7 @@ export enum CellState {
   Locked = 'locked',
   PathStart = 'pathStart',
   PathEnd = 'pathEnd',
+  Selected = 'selected',
 }
 
 // States that are not interactive
@@ -22,6 +24,7 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
   private cellState: CellState = CellState.Empty;
   private tower?: Phaser.GameObjects.Sprite;
   private highlight?: Phaser.GameObjects.Rectangle;
+  private isHovering: boolean = false;
 
   constructor(scene: Scene, x: number, y: number, initialState: CellState = CellState.Empty) {
     super(scene, x, y, cellSize, cellSize, cellBackground);
@@ -38,6 +41,9 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
       })
       .on('pointerout', () => {
         this.handlePointerOut();
+      })
+      .on('pointerover', () => {
+        this.handlePointerOver();
       });
 
     // Initialize cell state
@@ -51,26 +57,37 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
   }
 
   private handlePointerUp() {
-    // TODO: Implement
+    if (this.cellState === CellState.Empty) {
+      this.setCellState(CellState.Selected);
+      this.scene.events.emit('cellSelected', this);
+    }
   }
 
   private handlePointerOut() {
-    // TODO: Implement
+    this.isHovering = false;
+    this.updateAppearance();
+  }
+
+  private handlePointerOver() {
+    this.isHovering = true;
+    this.updateAppearance();
   }
 
   private handlePointerDown() {
-    this.printDebugData();
-    // TODO: Implement
+    // Handled by the tooltip manager
   }
 
   private updateAppearance() {
     switch (this.cellState) {
       case CellState.Empty:
         this.setFillStyle(cellBackground);
-        this.setStrokeStyle(strokeWidth, strokeColor);
+        this.setStrokeStyle(strokeWidth, this.isHovering ? highlightColor : strokeColor);
+        break;
+      case CellState.Selected:
+        this.setFillStyle(cellBackground);
+        this.setStrokeStyle(2, highlightColor);
         break;
       case CellState.Path:
-        // TODO: Use a nicer graphic or color for the path of the enemies.
         this.setFillStyle(0xffffff);
         this.setStrokeStyle(strokeWidth, 0xffffff);
         break;
@@ -79,20 +96,32 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
         this.setStrokeStyle(strokeWidth, 0x0000ff);
         break;
       case CellState.PathEnd:
-        this.setFillStyle(0xff00000);
-        this.setStrokeStyle(strokeWidth, 0xff00000);
+        this.setFillStyle(0xff0000);
+        this.setStrokeStyle(strokeWidth, 0xff0000);
+        break;
+      case CellState.Tower:
+        this.setFillStyle(cellBackground);
+        this.setStrokeStyle(strokeWidth, this.isHovering ? highlightColor : 0x00ff00);
         break;
     }
   }
 
-  private printDebugData() {
-    console.log('Cell debug data:');
-    console.log('Location:', this.x, this.y);
-    console.log('State:', this.cellState);
-    console.log('--------------------------------');
-  }
-
   public getCellState(): CellState {
     return this.cellState;
+  }
+
+  public getTooltipContent(): string {
+    const position = `[${Math.floor(this.x / cellSize)},${Math.floor(this.y / cellSize)}]`;
+
+    switch (this.cellState) {
+      case CellState.Empty:
+        return `Empty Cell ${position}\nClick to build a tower`;
+      case CellState.Tower:
+        return `Tower ${position}\nLevel: 1\nDamage: 10\nRange: 3`;
+      case CellState.Selected:
+        return `Selected Cell ${position}\nReady to build`;
+      default:
+        return `Cell ${position}\nState: ${this.cellState}`;
+    }
   }
 }

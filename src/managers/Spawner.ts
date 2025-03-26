@@ -1,7 +1,6 @@
 import SoldierEnemy from '@/entities/SoldierEnemy';
 import GameManager from './Game';
 import { EnemyType } from '@/entities/BaseEnemy';
-import BaseEnemy from '@/entities/BaseEnemy';
 
 interface EnemyToSpawn {
   enemyType: EnemyType;
@@ -54,23 +53,15 @@ export default class Spawner {
     const flattenedEnemies = this.flattenEnemies(waveToSpawn);
     const spawnPoint = this.spawnPoints[Phaser.Math.Between(0, this.spawnPoints.length - 1)];
 
-    console.log('spawnPoint', spawnPoint);
-
     flattenedEnemies.forEach((enemyType) => {
       switch (enemyType) {
-        case EnemyType.Soldier:
-          const gridContainer = this.gameManager
-            .getScene()
-            .children.getByName('gridContainer') as Phaser.GameObjects.Container;
-          const enemy = new SoldierEnemy(
-            scene,
-            spawnPoint.x + (gridContainer ? gridContainer.x : 0),
-            spawnPoint.y + (gridContainer ? gridContainer.y : 0),
-            1
-          );
+        case EnemyType.Soldier: {
+          // Why 100? To fix.
+          const enemy = new SoldierEnemy(scene, spawnPoint.x, spawnPoint.y + 100, 1);
           this.enemiesGroup.add(enemy);
-          console.log('enemy position:', enemy.x, enemy.y);
+          console.log('enemy', enemy);
           break;
+        }
       }
     });
 

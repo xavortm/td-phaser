@@ -11,6 +11,13 @@ export class Preloader extends Scene {
     //  Load the assets for the game - Replace with your own assets
     this.load.setPath('assets');
     this.load.font('pressStart2P', 'fonts/PressStart2P.ttf');
+    this.load.spritesheet('tiles', 'ui/tiles.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+      startFrame: 0,
+      margin: 16,
+      spacing: 8,
+    });
   }
 
   create() {
@@ -18,6 +25,6 @@ export class Preloader extends Scene {
     //  For example, you can define global animations here, so we can use them in other scenes.
 
     //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-    this.scene.start('MainMenu');
+    this.scene.start('Game');
   }
 }

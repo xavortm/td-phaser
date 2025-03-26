@@ -9,6 +9,7 @@ const highlightColor = 0x4488ff;
 
 export enum CellState {
   Empty = 'empty',
+  Hover = 'hover',
   Path = 'path',
   Tower = 'tower',
   Locked = 'locked',
@@ -20,17 +21,17 @@ export enum CellState {
 // States that are not interactive
 const lockedStates = [CellState.Locked, CellState.PathStart, CellState.PathEnd, CellState.Path];
 
-export default class Cell extends Phaser.GameObjects.Rectangle {
+export default class Cell extends Phaser.GameObjects.Sprite {
   private cellState: CellState = CellState.Empty;
-  private tower?: Phaser.GameObjects.Sprite;
-  private highlight?: Phaser.GameObjects.Rectangle;
   private isHovering: boolean = false;
+  private hasTower: boolean = false;
 
   constructor(scene: Scene, x: number, y: number, initialState: CellState = CellState.Empty) {
-    super(scene, x, y, cellSize, cellSize, cellBackground);
+    super(scene, x, y, 'tiles', 0);
 
     // Set up the cell's appearance
     this.setOrigin(0, 0);
+    this.setScale(cellSize / 16);
     lockedStates.includes(initialState) ? this.disableInteractive() : this.setInteractive();
 
     this.on('pointerdown', () => {
@@ -58,7 +59,8 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
 
   private handlePointerUp() {
     if (this.cellState === CellState.Empty) {
-      this.setCellState(CellState.Selected);
+      // Temporarily set to tower for debugging
+      this.setCellState(CellState.Tower);
       this.scene.events.emit('cellSelected', this);
     }
   }
@@ -78,30 +80,35 @@ export default class Cell extends Phaser.GameObjects.Rectangle {
   }
 
   private updateAppearance() {
+    // Update frame or color based on state
     switch (this.cellState) {
       case CellState.Empty:
-        this.setFillStyle(cellBackground);
-        this.setStrokeStyle(strokeWidth, this.isHovering ? highlightColor : strokeColor);
+        this.setFrame(85);
+        // Only change tint on hover, not state
+        this.setTint(this.isHovering ? highlightColor : 0x333333);
         break;
       case CellState.Selected:
-        this.setFillStyle(cellBackground);
-        this.setStrokeStyle(2, highlightColor);
+        this.setFrame(200);
         break;
       case CellState.Path:
-        this.setFillStyle(0xffffff);
-        this.setStrokeStyle(strokeWidth, 0xffffff);
+        this.setFrame(52);
+        this.setTint(0xffffff);
         break;
       case CellState.PathStart:
-        this.setFillStyle(0x0000ff);
-        this.setStrokeStyle(strokeWidth, 0x0000ff);
+        this.setFrame(52);
+        this.setTint(0x0000ff);
         break;
       case CellState.PathEnd:
-        this.setFillStyle(0xff0000);
-        this.setStrokeStyle(strokeWidth, 0xff0000);
+        this.setFrame(52);
+        this.setTint(0xff0000);
+        break;
+      case CellState.Hover:
+        this.setFrame(52);
+        this.setTint(0x00ff00);
         break;
       case CellState.Tower:
-        this.setFillStyle(cellBackground);
-        this.setStrokeStyle(strokeWidth, this.isHovering ? highlightColor : 0x00ff00);
+        this.setFrame(200);
+        this.setTint(this.isHovering ? highlightColor : 0xffffff);
         break;
     }
   }

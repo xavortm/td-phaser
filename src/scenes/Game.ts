@@ -1,7 +1,5 @@
 import { Scene } from 'phaser';
-import Cell from '@/entities/Cell';
 import GameManager from '@/managers/Game';
-import BaseEnemy from '@/entities/BaseEnemy';
 
 // The game will be a single scene that the player has to complete for give time.
 // There are no levels. Works like Belatro in a way.
@@ -10,7 +8,6 @@ export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.Image;
   msg_text: Phaser.GameObjects.Text;
-  private gameManager: GameManager;
 
   constructor() {
     super('Game');
@@ -21,24 +18,26 @@ export class Game extends Scene {
   }
 
   create() {
-    this.gameManager = new GameManager(this);
+    // All the game logic:
+    new GameManager(this);
+
     this.scene.launch('UI');
 
-    // Keep at the end.
     this.events.emit('gameReady');
+
+    // Add click event to log coordinates
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      console.log(`
+        Clicked at: 
+        - Screen: x=${pointer.x}, y=${pointer.y}
+      `);
+    });
   }
 
-  update() {
-    // Update all enemies in the spawner's group
-    this.gameManager
-      .getSpawner()
-      .getEnemiesGroup()
-      .getChildren()
-      .forEach((enemy) => {
-        (enemy as BaseEnemy).update();
-      });
-  }
+  // Maybe this is the wrong place to add this code?
+  update() { }
 
+  // To be updated of course.
   private textureEnemySoldier() {
     const graphics = this.add.graphics();
     graphics.lineStyle(2, 0x000000);

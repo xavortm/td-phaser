@@ -4,7 +4,6 @@ import Cell, { CellState } from '@/entities/Cell';
 export default class GridManager {
   private gameManager: GameManager;
   private grid: Cell[][];
-  private gridContainer: Phaser.GameObjects.Container;
   private spawnPoints: Phaser.GameObjects.Rectangle[];
 
   constructor(gameManager: GameManager) {
@@ -14,10 +13,6 @@ export default class GridManager {
 
   public getGrid(): Cell[][] {
     return this.grid;
-  }
-
-  public getGridContainer(): Phaser.GameObjects.Container {
-    return this.gridContainer;
   }
 
   public getSpawnPoints(): Phaser.GameObjects.Rectangle[] {
@@ -47,24 +42,24 @@ export default class GridManager {
   private generateInteractiveGrid(cols: number, rows: number) {
     const padding = [55, 75]; // Padding from edges
     const scene = this.gameManager.getScene();
-    this.gridContainer = scene.add.container(padding[0], padding[1]);
-    this.gridContainer.setName('gridContainer');
+    scene.add.container(padding[0], padding[1]);
 
     // Calculate cell dimensions
     const cellWidth = 48;
     const cellHeight = 48;
     this.grid = [];
+    const offset = 60;
 
     for (let row = 0; row < rows; row++) {
       this.grid[row] = [];
       for (let col = 0; col < cols; col++) {
-        const cell = new Cell(scene, col * cellWidth, row * cellHeight);
+        const cell = new Cell(scene, col * cellWidth + offset, row * cellHeight + offset + 20);
 
         // Store reference to cell
         this.grid[row][col] = cell;
 
         // Add to container
-        this.gridContainer.add(cell);
+        scene.add.existing(cell);
       }
     }
   }

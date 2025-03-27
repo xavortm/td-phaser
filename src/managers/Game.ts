@@ -13,6 +13,8 @@ export default class GameManager {
 
   constructor(scene: Scene) {
     this.scene = scene;
+
+    // We have a few managers taking care of separate game mechanics:
     this.waveManager = new WaveManager(this);
     this.gridManager = new GridManager(this);
     this.spawner = new Spawner(this);
@@ -33,28 +35,12 @@ export default class GameManager {
     // The UI is ready, so we can create the path and set the spawn points
     this.scene.events.once('uiReady', () => {
       this.gridManager.createPath(1);
-      this.registerCellTooltips();
       this.startNextWave();
     });
   }
 
-  private registerCellTooltips(): void {
-    // Register tooltips for all cells
-    const grid = this.gridManager.getGrid();
-    for (let row = 0; row < grid.length; row++) {
-      for (let col = 0; col < grid[row].length; col++) {
-        const cell = grid[row][col];
-
-        // Only register for interactive cells
-        if (cell.input && cell.input.enabled) {
-          this.tooltipManager.registerTooltipForObject(cell, () => {
-            return cell.getTooltipContent();
-          });
-        }
-      }
-    }
-  }
-
+  // The handleDataChange method will look for any important events like
+  // game-over or similar..
   private handleDataChange(parent: any, key: string, value: any): void {
     console.log(`Data changed: ${key} to ${value}`);
     // You can handle specific data changes here

@@ -1,12 +1,12 @@
 import { Scene } from 'phaser';
+import BaseTower from './BaseTower';
+import AttackTower from './AttackTower';
 
 // To move in a config later?
-const cellBackground = 0x000000;
 const cellSize = 48;
-const strokeWidth = 1;
-const strokeColor = 0x333333;
 const highlightColor = 0x4488ff;
 
+/* eslint-disable no-unused-vars */
 export enum CellState {
   Empty = 'empty',
   Hover = 'hover',
@@ -17,6 +17,7 @@ export enum CellState {
   PathEnd = 'pathEnd',
   Selected = 'selected',
 }
+/* eslint-enable no-unused-vars */
 
 // States that are not interactive
 const lockedStates = [CellState.Locked, CellState.PathStart, CellState.PathEnd, CellState.Path];
@@ -24,7 +25,6 @@ const lockedStates = [CellState.Locked, CellState.PathStart, CellState.PathEnd, 
 export default class Cell extends Phaser.GameObjects.Sprite {
   private cellState: CellState = CellState.Empty;
   private isHovering: boolean = false;
-  private hasTower: boolean = false;
 
   constructor(scene: Scene, x: number, y: number, initialState: CellState = CellState.Empty) {
     super(scene, x, y, 'tiles', 0);
@@ -62,6 +62,9 @@ export default class Cell extends Phaser.GameObjects.Sprite {
       // Temporarily set to tower for debugging
       this.setCellState(CellState.Tower);
       this.scene.events.emit('cellSelected', this);
+
+      const tower = new AttackTower(this.scene, this.x, this.y);
+      this.scene.add.existing(tower);
     }
   }
 
